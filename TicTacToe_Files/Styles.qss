@@ -1,0 +1,35 @@
+* {
+    font: bold 13px Ubuntu;
+}
+
+QMainWindow, QDialog {
+    background: palette(base);
+}
+
+GameBar QPushButton {
+    border: 0;
+}
+
+Board {
+    background: gray;
+    margin: 40;
+}
+
+Square {
+    background: palette(base);
+    border: 0;
+    width: 110;
+    height: 110;
+}
+
+StatsDialog QLabel {
+    qproperty-alignment: AlignCenter;
+}
+
+SettingsDialog QCheckBox {
+    padding-right: 50;
+}
+
+HelpDialog QTextEdit {
+    border: 0;
+}

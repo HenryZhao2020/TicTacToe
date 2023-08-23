@@ -42,7 +42,15 @@ void Game::restart() {
     board = new Board(this);
     vboxLayout->addWidget(board);
 
-    startRound();
+    if (Attr::numPlayed % 2) {
+        bar->setHintText("Computer's Turn");
+        board->setXsTurn(false);
+        QTimer::singleShot(500, this, [this] {
+            board->placeO();
+        });
+    } else {
+        bar->setHintText("Your Turn");
+    }
 }
 
 void Game::restore() {
@@ -57,6 +65,7 @@ void Game::restore() {
         return;
     }
 
+    bar->setHintText("Your Turn");
     bar->setHintVisible(Attr::hintVisible);
 
     for (auto &i : Attr::xPlaced) {
@@ -65,19 +74,5 @@ void Game::restore() {
 
     for (auto &i : Attr::oPlaced) {
         board->place(i, Pixmap::get("O.png"), false);
-    }
-
-    startRound();
-}
-
-void Game::startRound() {
-    if (Attr::numPlayed % 2 && Attr::oPlaced.isEmpty()) {
-        bar->setHintText("Computer's Turn");
-        board->setXsTurn(false);
-        QTimer::singleShot(500, this, [this] {
-            board->placeO();
-        });
-    } else {
-        bar->setHintText("Your Turn");
     }
 }

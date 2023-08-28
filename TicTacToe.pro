@@ -14,6 +14,8 @@ HEADERS += *.h
 
 TARGET = "Tic Tac Toe"
 
+QMAKE_TARGET_DESCRIPTION = "Tic Tac Toe"
+
 RC_ICONS = "Logo.ico"
 
 PRECOMPILED_HEADER = PCH.h

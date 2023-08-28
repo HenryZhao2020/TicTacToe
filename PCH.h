@@ -1,6 +1,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#include <Windows.h>
+
 #include <QApplication>
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -22,5 +24,6 @@
 
 #include "File.h"
 #include "Pixmap.h"
+#include "RunGuard.h"
 
 #endif

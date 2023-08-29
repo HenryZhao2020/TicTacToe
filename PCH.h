@@ -24,6 +24,6 @@
 
 #include "File.h"
 #include "Pixmap.h"
-#include "RunGuard.h"
+#include "SingleApplication/SingleApplication"
 
 #endif

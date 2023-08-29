@@ -27,9 +27,10 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    QDir::setCurrent(QApplication::applicationDirPath());
-    QFontDatabase::addApplicationFont("Fonts/Ubuntu_Bold.ttf");
+    QDir::setCurrent(QApplication::applicationDirPath());    
     QDir::setCurrent("TicTacToe_Files");
+
+    QFontDatabase::addApplicationFont("../Fonts/Ubuntu_Bold.ttf");
 
     app.setStyle("Fusion");
     app.setStyleSheet(File::readAll("Styles.qss"));

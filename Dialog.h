@@ -11,8 +11,6 @@ class Dialog : public QDialog {
 public:
     Dialog(Game *game, const QPixmap &pixmap, const QString &title);
 
-    void close();
-
 protected:
     Game *game;
     QVBoxLayout *vboxLayout;

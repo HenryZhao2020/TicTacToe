@@ -10,6 +10,7 @@ Dialog::Dialog(Game *game, const QPixmap &pixmap, const QString &title)
     setWindowIcon(pixmap);
     setWindowTitle(title);
     setModal(true);
+    setAttribute(Qt::WA_DeleteOnClose);
 
     vboxLayout = new QVBoxLayout(this);
     vboxLayout->setSpacing(10);
@@ -28,19 +29,14 @@ Dialog::Dialog(Game *game, const QPixmap &pixmap, const QString &title)
     buttonLayout->addWidget(okButton);
 }
 
-void Dialog::close() {
-    QDialog::close();
-    deleteLater();
-}
-
 StatsDialog::StatsDialog(Game *game)
     : Dialog(game, Pixmap::get("Stats.png"), "Statistics") {
-    formLayout = new QFormLayout();
+    formLayout = new QFormLayout(this);
     formLayout->setHorizontalSpacing(80);
     formLayout->setVerticalSpacing(10);
     formLayout->setContentsMargins(0, 0, 0, 0);
     vboxLayout->insertLayout(0, formLayout);
-    
+
     addRow("You (X):", Attr::xScore);
     addRow("Tie:", Attr::numTied);
     addRow("Computer (O):", Attr::oScore);
@@ -104,7 +100,7 @@ HelpDialog::HelpDialog(Game *game)
     aboutLayout->setContentsMargins(0, 0, 0, 0);
     aboutLayout->addWidget(newTextEdit("About.html"), 0, 0, 1, 0);
 
-    auto webButton = new QPushButton("Website");
+    auto webButton = new QPushButton("Website", this);
     webButton->setCursor(Qt::PointingHandCursor);
     connect(webButton, &QPushButton::clicked, this, [] {
         QUrl url("https://github.com/HenryZhao2020/TicTacToe");
@@ -112,14 +108,14 @@ HelpDialog::HelpDialog(Game *game)
     });
     aboutLayout->addWidget(webButton, 1, 0);
 
-    auto qtButton = new QPushButton("About Qt");
+    auto qtButton = new QPushButton("About Qt", this);
     qtButton->setCursor(Qt::PointingHandCursor);
     connect(qtButton, &QPushButton::clicked, this, &QApplication::aboutQt);
     aboutLayout->addWidget(qtButton, 1, 1);
 }
 
 QTextEdit *HelpDialog::newTextEdit(const QString &htmlFile) {
-    auto textEdit = new QTextEdit(tabWidget);
+    auto textEdit = new QTextEdit(this);
     textEdit->setReadOnly(true);
     textEdit->setHtml(File::readAll(htmlFile));
     return textEdit;

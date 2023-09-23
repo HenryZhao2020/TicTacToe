@@ -1,5 +1,4 @@
-#ifndef GAMEBAR_H
-#define GAMEBAR_H
+#pragma once
 
 #include "PCH.h"
 
@@ -12,18 +11,19 @@ class GameBar : public QFrame {
 public:
     GameBar(Game *game);
 
-    void setHintPixmap(const QPixmap &pixmap);
-    void setHintText(const QString &text, int size = 0);
+    void setHintIcon(const QIcon &icon);
+    void setHintText(const QString &text);
     void setHintVisible(bool visible);
     void setRestartButtonVisible(bool visible);
 
 private:
+    QTimer *timer;
+    int textLength;
+
     QHBoxLayout *hboxLayout;
-    QLabel *pixmapLabel;
+    QPushButton *iconButton;
     QLabel *hintLabel;
-    QPushButton *restartButton;
+    QPushButton *restartButton;    
 
-    QPushButton *newButton(const QPixmap &pixmap, const QString &tip);
+    QPushButton *newButton(const QIcon &icon, const QString &tip);
 };
-
-#endif

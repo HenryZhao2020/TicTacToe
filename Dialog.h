@@ -1,5 +1,4 @@
-#ifndef DIALOG_H
-#define DIALOG_H
+#pragma once
 
 #include "PCH.h"
 
@@ -9,13 +8,28 @@ class Dialog : public QDialog {
     Q_OBJECT
 
 public:
-    Dialog(Game *game, const QPixmap &pixmap, const QString &title);
+    Dialog(Game *game, const QIcon &icon, const QString &title);
+
+    void keyPressEvent(QKeyEvent *event);
 
 protected:
     Game *game;
     QVBoxLayout *vboxLayout;
     QHBoxLayout *buttonLayout;
     QPushButton *okButton;
+};
+
+class SettingsDialog : public Dialog {
+    Q_OBJECT
+
+public:
+    SettingsDialog(Game *game);
+
+private:
+    QHash<QCheckBox *, bool *> boxes;
+
+    void addBox(const QString &text, bool *var);
+    void apply();
 };
 
 class StatsDialog : public Dialog {
@@ -31,19 +45,6 @@ private:
     void reset();
 };
 
-class SettingsDialog : public Dialog {
-    Q_OBJECT
-
-public:
-    SettingsDialog(Game *game);
-
-private:
-    QHash<QCheckBox *, bool *> boxes;
-
-    QCheckBox *newBox(const QString &text, bool *var);
-    void apply();
-};
-
 class HelpDialog : public Dialog {
     Q_OBJECT
 
@@ -55,5 +56,3 @@ private:
 
     QTextEdit *newTextEdit(const QString &fileName);
 };
-
-#endif

@@ -1,4 +1,3 @@
-#include "PCH.h"
 #include "Game.h"
 #include "Attr.h"
 
@@ -34,8 +33,10 @@ int main(int argc, char *argv[]) {
 
     app.setStyle("Fusion");
     app.setStyleSheet(File::readAll("Styles.qss"));
-    QObject::connect(&app, &SingleApplication::aboutToQuit, &app, &Attr::save);
-    QObject::connect(&app, &SingleApplication::receivedMessage, &receivedMessage);
+
+    QObject::connect(&app, &QApplication::aboutToQuit, &app, &Attr::save);
+    QObject::connect(&app, &SingleApplication::receivedMessage,
+                     &app, &receivedMessage);
 
     game = new Game();
     game->restore();

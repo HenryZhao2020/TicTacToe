@@ -1,5 +1,4 @@
-#ifndef BOARD_H
-#define BOARD_H
+#pragma once
 
 #include "PCH.h"
 
@@ -13,25 +12,23 @@ class Board : public QFrame {
 public:
     Board(Game *game);
 
-    void place(int i, const QPixmap &pixmap, bool animated);
+    void place(int i, const QIcon &icon, bool animated);
     void placeX(int i);
     void placeO();
-    void setXsTurn(bool turn);
+    void setPlayerTurn(bool turn);
 
 private:
     Game *game;
     GameBar *gameBar;
     Square *squares[9];
     QList<int> notPlaced;
-    bool xsTurn;
+    bool playerTurn;
 
     int lastMissingIndex(const QList<int> &placed);
     int nextO();
     bool isEnded();
-    void makeEnded(const QPixmap &pixmap, const QString &text);
+    void makeEnded(const QIcon &icon, const QString &text);
     void makeWinnerX(const QList<int> &seq);
     void makeWinnerO(const QList<int> &seq);
     void makeTie();
 };
-
-#endif

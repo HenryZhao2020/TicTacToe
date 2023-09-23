@@ -3,11 +3,11 @@
 #include "GameBar.h"
 #include "Attr.h"
 
-Dialog::Dialog(Game *game, const QPixmap &pixmap, const QString &title)
+Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
     : QDialog(game, Qt::MSWindowsFixedSizeDialogHint) {
     this->game = game;
 
-    setWindowIcon(pixmap);
+    setWindowIcon(icon);
     setWindowTitle(title);
     setModal(true);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -16,12 +16,14 @@ Dialog::Dialog(Game *game, const QPixmap &pixmap, const QString &title)
     vboxLayout->setSpacing(10);
     vboxLayout->setContentsMargins(30, 30, 30, 30);
 
-    buttonLayout = new QHBoxLayout();
+    auto buttonFrame = new QFrame(this);
+    vboxLayout->addSpacing(40);
+    vboxLayout->addWidget(buttonFrame);
+
+    buttonLayout = new QHBoxLayout(buttonFrame);
     buttonLayout->setSpacing(5);
     buttonLayout->setContentsMargins(0, 0, 0, 0);
     buttonLayout->setAlignment(Qt::AlignCenter);
-    vboxLayout->addSpacing(40);
-    vboxLayout->addLayout(buttonLayout);
 
     okButton = new QPushButton("OK", this);
     okButton->setDefault(true);
@@ -29,13 +31,49 @@ Dialog::Dialog(Game *game, const QPixmap &pixmap, const QString &title)
     buttonLayout->addWidget(okButton);
 }
 
+void Dialog::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Escape) {
+        close();
+    }
+    QDialog::keyPressEvent(event);
+}
+
+SettingsDialog::SettingsDialog(Game *game)
+    : Dialog(game, getIcon("Settings.svg"), "Settings") {
+    addBox("Enable Animation", &Attr::animated);
+    addBox("Show Hint", &Attr::hintVisible);
+
+    connect(okButton, &QPushButton::clicked, this, &SettingsDialog::apply);
+
+    auto cancelButton = new QPushButton("Cancel", this);
+    connect(cancelButton, &QPushButton::clicked, this, &Dialog::close);
+    buttonLayout->addWidget(cancelButton);
+}
+
+void SettingsDialog::addBox(const QString &text, bool *var) {
+    auto box = new QCheckBox(text, this);
+    box->setChecked(*var);
+    vboxLayout->insertWidget(boxes.size(), box);
+    boxes[box] = var;
+}
+
+void SettingsDialog::apply() {
+    for (auto it = boxes.begin(); it != boxes.end(); it++) {
+        *it.value() = it.key()->isChecked();
+    }
+
+    game->getGameBar()->setHintVisible(Attr::hintVisible);
+}
+
 StatsDialog::StatsDialog(Game *game)
-    : Dialog(game, Pixmap::get("Stats.png"), "Statistics") {
-    formLayout = new QFormLayout(this);
+    : Dialog(game, getIcon("Stats.svg"), "Statistics") {
+    auto formFrame = new QFrame(this);
+    vboxLayout->insertWidget(0, formFrame);
+
+    formLayout = new QFormLayout(formFrame);
     formLayout->setHorizontalSpacing(80);
     formLayout->setVerticalSpacing(10);
     formLayout->setContentsMargins(0, 0, 0, 0);
-    vboxLayout->insertLayout(0, formLayout);
 
     addRow("You (X):", Attr::xScore);
     addRow("Tie:", Attr::numTied);
@@ -58,36 +96,8 @@ void StatsDialog::reset() {
     close();
 }
 
-SettingsDialog::SettingsDialog(Game *game)
-    : Dialog(game, Pixmap::get("Settings.png"), "Settings") {
-    newBox("Enable Animation", &Attr::animated);
-    newBox("Show Hint", &Attr::hintVisible);
-
-    connect(okButton, &QPushButton::clicked, this, &SettingsDialog::apply);
-
-    auto cancelButton = new QPushButton("Cancel", this);
-    connect(cancelButton, &QPushButton::clicked, this, &Dialog::close);
-    buttonLayout->addWidget(cancelButton);
-}
-
-QCheckBox *SettingsDialog::newBox(const QString &text, bool *var) {
-    auto box = new QCheckBox(text, this);
-    box->setChecked(*var);
-    vboxLayout->insertWidget(boxes.size(), box);
-    boxes[box] = var;
-    return box;
-}
-
-void SettingsDialog::apply() {
-    for (auto &box : boxes.keys()) {
-        *boxes[box] = box->isChecked();
-    }
-
-    game->getGameBar()->setHintVisible(Attr::hintVisible);
-}
-
 HelpDialog::HelpDialog(Game *game)
-    : Dialog(game, Pixmap::get("Help.png"), "Help") {
+    : Dialog(game, getIcon("Help.svg"), "Help") {
     tabWidget = new QTabWidget(this);
     tabWidget->addTab(newTextEdit("Rules.html"), "Rules");
     vboxLayout->insertWidget(0, tabWidget);
@@ -103,7 +113,7 @@ HelpDialog::HelpDialog(Game *game)
     auto webButton = new QPushButton("Website", this);
     webButton->setCursor(Qt::PointingHandCursor);
     connect(webButton, &QPushButton::clicked, this, [] {
-        QUrl url("https://github.com/HenryZhao2020/TicTacToe");
+        static QUrl url("https://github.com/HenryZhao2020/TicTacToe");
         QDesktopServices::openUrl(url);
     });
     aboutLayout->addWidget(webButton, 1, 0);

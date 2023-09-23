@@ -1,5 +1,4 @@
-#ifndef SQUARE_H
-#define SQUARE_H
+#pragma once
 
 #include "PCH.h"
 
@@ -11,8 +10,10 @@ class Square : public QPushButton {
 public:
     Square(Board *board, int i);
 
-    void zoom(int size = 0);
-    void flash(int count = 0);
-};
+    void zoom();
+    void flash();
 
-#endif
+private:
+    int iconSize;
+    int flashCount;
+};

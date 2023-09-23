@@ -1,33 +1,21 @@
 #include "Attr.h"
 
-QList<int> Attr::xPlaced = {};
-QList<int> Attr::oPlaced = {};
-bool Attr::ended = false;
-
-int Attr::numPlayed = 0;
-int Attr::xScore = 0;
-int Attr::oScore = 0;
-int Attr::numTied = 0;
-
-bool Attr::animated = true;
-bool Attr::hintVisible = true;
-
 void Attr::save() {
     QFile file("TicTacToe_Data");
     file.open(QFile::WriteOnly);
 
-    QDataStream stream(&file);
-    stream << xPlaced;
-    stream << oPlaced;
-    stream << ended;
+    QDataStream out(&file);
+    out << xPlaced;
+    out << oPlaced;
+    out << ended;
 
-    stream << numPlayed;
-    stream << xScore;
-    stream << oScore;
-    stream << numTied;
+    out << numPlayed;
+    out << xScore;
+    out << oScore;
+    out << numTied;
 
-    stream << animated;
-    stream << hintVisible;
+    out << animated;
+    out << hintVisible;
 
     file.close();
 }
@@ -38,18 +26,18 @@ bool Attr::load() {
         return false;
     }
 
-    QDataStream stream(&file);
-    stream >> xPlaced;
-    stream >> oPlaced;
-    stream >> ended;
+    QDataStream in(&file);
+    in >> xPlaced;
+    in >> oPlaced;
+    in >> ended;
 
-    stream >> numPlayed;
-    stream >> xScore;
-    stream >> oScore;
-    stream >> numTied;
+    in >> numPlayed;
+    in >> xScore;
+    in >> oScore;
+    in >> numTied;
 
-    stream >> animated;
-    stream >> hintVisible;
+    in >> animated;
+    in >> hintVisible;
 
     file.close();
     return true;

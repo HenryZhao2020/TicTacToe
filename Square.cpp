@@ -8,29 +8,34 @@ Square::Square(Board *board, int i) : QPushButton(board) {
     });
 }
 
-void Square::zoom(int size) {
-    if (size > 64) {
-        return;
-    }
+void Square::zoom() {
+    iconSize = 0;
 
-    setIconSize(QSize(size, size));
-    QTimer::singleShot(3, this, [this, size] {
-        zoom(size + 2);
+    auto timer = new QTimer(this);
+    timer->setInterval(2);
+    connect(timer, &QTimer::timeout, this, [this, timer] {
+        if (iconSize > 64) {
+            timer->deleteLater();
+        } else {
+            setIconSize(QSize(++iconSize, iconSize));
+        }
     });
+    timer->start();
 }
 
-void Square::flash(int count) {
-    if (count > 4) {
-        return;
-    }
+void Square::flash() {
+    flashCount = 0;
 
-    if (count % 2) {
-        setIconSize(QSize(0, 0));
-    } else {
-        setIconSize(QSize(64, 64));
-    }
-
-    QTimer::singleShot(200, this, [this, count] {
-        flash(count + 1);
+    auto timer = new QTimer(this);
+    timer->setInterval(200);
+    connect(timer, &QTimer::timeout, this, [this, timer] {
+        if (++flashCount > 4) {
+            timer->deleteLater();
+        } else if (flashCount % 2) {
+            setIconSize(QSize(0, 0));
+        } else {
+            setIconSize(QSize(64, 64));
+        }
     });
+    timer->start();
 }

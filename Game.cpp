@@ -12,12 +12,14 @@ Game::Game() : QMainWindow(nullptr, Qt::MSWindowsFixedSizeDialogHint) {
     vboxLayout->setContentsMargins(30, 30, 30, 30);
 
     bar = new GameBar(this);
-    bar->setHintPixmap(Pixmap::get("Bulb.png"));
+    bar->setHintVisible(Attr::hintVisible);
+    bar->setHintIcon(getIcon("Bulb.svg"));
+    bar->setHintText("Click a square to begin...");
     bar->setRestartButtonVisible(false);
     vboxLayout->addWidget(bar);
 
     board = new Board(this);
-    vboxLayout->addWidget(board);
+    vboxLayout->addWidget(board, true);
 }
 
 GameBar *Game::getGameBar() {
@@ -33,7 +35,7 @@ void Game::restart() {
     Attr::oPlaced.clear();
     Attr::ended = false;
 
-    bar->setHintPixmap(Pixmap::get("Bulb.png"));
+    bar->setHintIcon(getIcon("Bulb.svg"));
     bar->setRestartButtonVisible(false);
 
     vboxLayout->removeWidget(board);
@@ -44,7 +46,7 @@ void Game::restart() {
 
     if (Attr::numPlayed % 2) {
         bar->setHintText("Computer's Turn");
-        board->setXsTurn(false);
+        board->setPlayerTurn(false);
         QTimer::singleShot(500, this, [this] {
             board->placeO();
         });
@@ -55,8 +57,6 @@ void Game::restart() {
 
 void Game::restore() {
     if (!Attr::load()) {
-        bar->setHintText("Click a square to begin...");
-        bar->setHintVisible(Attr::hintVisible);
         return;
     }
 
@@ -69,10 +69,10 @@ void Game::restore() {
     bar->setHintVisible(Attr::hintVisible);
 
     for (auto &i : Attr::xPlaced) {
-        board->place(i, Pixmap::get("X.png"), false);
+        board->place(i, getIcon("X.svg"), false);
     }
 
     for (auto &i : Attr::oPlaced) {
-        board->place(i, Pixmap::get("O.png"), false);
+        board->place(i, getIcon("O.svg"), false);
     }
 }

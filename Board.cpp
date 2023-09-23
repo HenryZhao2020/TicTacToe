@@ -12,8 +12,8 @@ QList<QList<int>> SEQUENCES = {
 Board::Board(Game *game) : QFrame(game) {
     this->game = game;
     gameBar = game->getGameBar();
-    xsTurn = true;
     notPlaced = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    playerTurn = true;
 
     auto gridLayout = new QGridLayout(this);
     gridLayout->setSpacing(5);
@@ -25,8 +25,8 @@ Board::Board(Game *game) : QFrame(game) {
     }
 }
 
-void Board::place(int i, const QPixmap &pixmap, bool animated) {
-    squares[i]->setIcon(pixmap);
+void Board::place(int i, const QIcon &icon, bool animated) {
+    squares[i]->setIcon(icon);
     disconnect(squares[i], &QPushButton::clicked, nullptr, nullptr);
 
     if (animated) {
@@ -39,13 +39,13 @@ void Board::place(int i, const QPixmap &pixmap, bool animated) {
 }
 
 void Board::placeX(int i) {
-    if (!xsTurn) {
+    if (!playerTurn) {
         return;
     }
 
-    place(i, Pixmap::get("X.png"), Attr::animated);
+    place(i, getIcon("X.svg"), Attr::animated);
     Attr::xPlaced.append(i);
-    xsTurn = false;
+    playerTurn = false;
     gameBar->setHintVisible(false);
 
     if (isEnded()) {
@@ -57,14 +57,12 @@ void Board::placeX(int i) {
         gameBar->setHintText("Computer's Turn");
     });
 
-    QTimer::singleShot(1000, this, [this] {
-        placeO();
-    });
+    QTimer::singleShot(1000, this, &Board::placeO);
 }
 
 void Board::placeO() {
     int i = nextO();
-    place(i, Pixmap::get("O.png"), Attr::animated);
+    place(i, getIcon("O.svg"), Attr::animated);
     Attr::oPlaced.append(i);
 
     if (isEnded()) {
@@ -72,13 +70,13 @@ void Board::placeO() {
     }
 
     QTimer::singleShot(500, this, [this] {
-        xsTurn = true;
+        playerTurn = true;
         gameBar->setHintText("Your Turn");
     });
 }
 
-void Board::setXsTurn(bool turn) {
-    xsTurn = turn;
+void Board::setPlayerTurn(bool turn) {
+    playerTurn = turn;
 }
 
 int Board::lastMissingIndex(const QList<int> &placed) {
@@ -101,14 +99,14 @@ int Board::lastMissingIndex(const QList<int> &placed) {
 }
 
 int Board::nextO() {
-    int index = lastMissingIndex(Attr::oPlaced);
-    if (index == -1) {
-        index = lastMissingIndex(Attr::xPlaced);
+    int i = lastMissingIndex(Attr::oPlaced);
+    if (i == -1) {
+        i = lastMissingIndex(Attr::xPlaced);
     }
-    if (index == -1) {
-        index = notPlaced[QRandomGenerator::global()->bounded(notPlaced.size())];
+    if (i == -1) {
+        i = notPlaced[QRandomGenerator::global()->bounded(notPlaced.size())];
     }
-    return index;
+    return i;
 }
 
 bool Board::isEnded() {
@@ -139,13 +137,13 @@ bool Board::isEnded() {
     return false;
 }
 
-void Board::makeEnded(const QPixmap &pixmap, const QString &text) {
+void Board::makeEnded(const QIcon &icon, const QString &text) {
     for (auto &i : Attr::xPlaced) {
-        squares[i]->setIcon(Pixmap::get("X_Alpha.png"));
+        squares[i]->setIcon(getIcon("X_Alpha.svg"));
     }
 
     for (auto &i : Attr::oPlaced) {
-        squares[i]->setIcon(Pixmap::get("O_Alpha.png"));
+        squares[i]->setIcon(getIcon("O_Alpha.svg"));
     }
 
     for (auto &square : squares) {
@@ -155,7 +153,7 @@ void Board::makeEnded(const QPixmap &pixmap, const QString &text) {
     }
 
     gameBar->setHintVisible(Attr::hintVisible);
-    gameBar->setHintPixmap(pixmap);
+    gameBar->setHintIcon(icon);
     gameBar->setHintText(text);
     gameBar->setRestartButtonVisible(true);
 
@@ -168,11 +166,11 @@ void Board::makeEnded(const QPixmap &pixmap, const QString &text) {
 }
 
 void Board::makeWinnerX(const QList<int> &seq) {
-    makeEnded(Pixmap::get("Confetti.png"), "You Won!");
+    makeEnded(getIcon("Confetti.svg"), "You Won!");
     Attr::xScore++;
 
     for (auto &i : seq) {
-        squares[i]->setIcon(Pixmap::get("X.png"));
+        squares[i]->setIcon(getIcon("X.svg"));
         if (Attr::animated) {
             squares[i]->flash();
         }
@@ -180,11 +178,11 @@ void Board::makeWinnerX(const QList<int> &seq) {
 }
 
 void Board::makeWinnerO(const QList<int> &seq) {
-    makeEnded(Pixmap::get("Computer.png"), "Computer Won!");
+    makeEnded(getIcon("AI.svg"), "Computer Won!");
     Attr::oScore++;
 
     for (auto &i : seq) {
-        squares[i]->setIcon(Pixmap::get("O.png"));
+        squares[i]->setIcon(getIcon("O.svg"));
         if (Attr::animated) {
             squares[i]->flash();
         }
@@ -192,6 +190,6 @@ void Board::makeWinnerO(const QList<int> &seq) {
 }
 
 void Board::makeTie() {
-    makeEnded(Pixmap::get("Handshake.png"), "Tie!");
+    makeEnded(getIcon("Handshake.svg"), "Tie!");
     Attr::numTied++;
 }

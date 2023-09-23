@@ -4,59 +4,75 @@
 #include "Attr.h"
 
 GameBar::GameBar(Game *game) : QFrame(game) {
+    timer = nullptr;
+    textLength = 0;
+
     hboxLayout = new QHBoxLayout(this);
-    hboxLayout->setSpacing(5);
+    hboxLayout->setSpacing(4);
     hboxLayout->setContentsMargins(0, 0, 0, 0);
 
-    pixmapLabel = new QLabel(this);
-    hboxLayout->addWidget(pixmapLabel);
+    iconButton = new QPushButton(this);
+    iconButton->setIconSize(QSize(24, 24));
+    hboxLayout->addWidget(iconButton);
 
     hintLabel = new QLabel(this);
     hboxLayout->addWidget(hintLabel);
     hboxLayout->addStretch();
 
-    restartButton = newButton(Pixmap::get("Restart.png"), "Restart");
+    restartButton = newButton(getIcon("Restart.svg"), "Restart");
     connect(restartButton, &QPushButton::clicked, this, [game] {
         game->restart();
     });
-
-    auto statsButton = newButton(Pixmap::get("Stats.png"), "Statistics");
-    connect(statsButton, &QPushButton::clicked, this, [game] {
-        auto statsDialog = new StatsDialog(game);
-        statsDialog->show();
-    });
-
-    auto settingsButton = newButton(Pixmap::get("Settings.png"), "Settings");
+    
+    auto settingsButton = newButton(getIcon("Settings.svg"), "Settings");
     connect(settingsButton, &QPushButton::clicked, this, [game] {
         auto settingsDialog = new SettingsDialog(game);
         settingsDialog->show();
     });
 
-    auto helpButton = newButton(Pixmap::get("Help.png"), "Help");
+    auto statsButton = newButton(getIcon("Stats.svg"), "Statistics");
+    connect(statsButton, &QPushButton::clicked, this, [game] {
+        auto statsDialog = new StatsDialog(game);
+        statsDialog->show();
+    });
+
+    auto helpButton = newButton(getIcon("Help.svg"), "Help");
     connect(helpButton, &QPushButton::clicked, this, [game] {
         auto helpDialog = new HelpDialog(game);
         helpDialog->show();
     });
 }
 
-void GameBar::setHintPixmap(const QPixmap &pixmap) {
-    pixmapLabel->setPixmap(pixmap);
+void GameBar::setHintIcon(const QIcon &icon) {
+    iconButton->setIcon(icon);
 }
 
-void GameBar::setHintText(const QString &text, int size) {
-    if (!Attr::animated || size == text.size()) {
+void GameBar::setHintText(const QString &text) {
+    if (!Attr::animated) {
         hintLabel->setText(text);
         return;
     }
 
-    hintLabel->setText(text.left(size));
-    QTimer::singleShot(20, this, [this, text, size] {
-        setHintText(text, size + 1);
+    textLength = 0;
+    if (timer != nullptr) {
+        timer->stop();    
+    }    
+
+    timer = new QTimer(this);
+    timer->setInterval(20);
+    connect(timer, &QTimer::timeout, this, [this, text] {
+        if (textLength > text.size()) {
+            timer->stop();
+            return;
+        }
+
+        hintLabel->setText(text.left(++textLength));
     });
+    timer->start();
 }
 
 void GameBar::setHintVisible(bool visible) {
-    pixmapLabel->setVisible(visible);
+    iconButton->setVisible(visible);
     hintLabel->setVisible(visible);
 }
 
@@ -64,10 +80,10 @@ void GameBar::setRestartButtonVisible(bool visible) {
     restartButton->setVisible(visible);
 }
 
-QPushButton *GameBar::newButton(const QPixmap &pixmap, const QString &tip) {
+QPushButton *GameBar::newButton(const QIcon &icon, const QString &tip) {
     auto button = new QPushButton(this);
-    button->setIcon(pixmap);
-    button->setIconSize(pixmap.size());
+    button->setIcon(icon);
+    button->setIconSize(QSize(24, 24));
     button->setToolTip(tip);
     button->setCursor(Qt::PointingHandCursor);
     hboxLayout->addWidget(button);

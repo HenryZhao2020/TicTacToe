@@ -12,7 +12,6 @@ void Square::zoom() {
     iconSize = 0;
 
     auto timer = new QTimer(this);
-    timer->setInterval(2);
     connect(timer, &QTimer::timeout, this, [this, timer] {
         if (iconSize > 64) {
             timer->deleteLater();
@@ -20,14 +19,13 @@ void Square::zoom() {
             setIconSize(QSize(++iconSize, iconSize));
         }
     });
-    timer->start();
+    timer->start(2);
 }
 
 void Square::flash() {
     flashCount = 0;
 
     auto timer = new QTimer(this);
-    timer->setInterval(200);
     connect(timer, &QTimer::timeout, this, [this, timer] {
         if (++flashCount > 4) {
             timer->deleteLater();
@@ -37,5 +35,5 @@ void Square::flash() {
             setIconSize(QSize(64, 64));
         }
     });
-    timer->start();
+    timer->start(200);
 }

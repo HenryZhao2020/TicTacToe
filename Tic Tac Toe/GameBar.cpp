@@ -57,7 +57,6 @@ void GameBar::setHintText(const QString &text) {
     hintLabel->setText("");
 
     timer = new QTimer(this);
-    timer->setInterval(20);
     connect(timer, &QTimer::timeout, this, [this, text] {
         if (textLength > text.size()) {
             timer->stop();
@@ -66,7 +65,7 @@ void GameBar::setHintText(const QString &text) {
 
         hintLabel->setText(text.left(++textLength));
     });
-    timer->start();
+    timer->start(20);
 }
 
 void GameBar::setHintVisible(bool visible) {

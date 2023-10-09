@@ -16,7 +16,7 @@ QMAKE_TARGET_DESCRIPTION = "Tic Tac Toe"
 
 RC_ICONS = "Logo.ico"
 
-VERSION = 1.2.1
+VERSION = 1.2.2
 
 SOURCES += *.cpp
 

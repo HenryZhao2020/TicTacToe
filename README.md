@@ -4,8 +4,6 @@ A classic board game that you can enjoy playing against your friends or my compu
 
 YouTube Demo: https://youtu.be/mHkpvoHMxG4
 
-Download Latest Version: https://github.com/HenryZhao2020/TicTacToe/releases/download/v2.1.0/TicTacToe-v2.1.0.zip
-
 
 # Preview
 

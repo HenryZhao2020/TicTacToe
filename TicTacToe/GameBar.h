@@ -1,5 +1,6 @@
 #pragma once
 
+// Forward declarations
 class Game;
 
 /**
@@ -17,19 +18,19 @@ public:
     ~GameBar();
 
     /**
-     * @brief Sets the icon on the left.
-     * @param icon The displayed icon.
+     * @brief Sets the hint icon on the left.
+     * @param icon The icon to be displayed.
      */
     void setHintIcon(const QIcon &icon);
 
     /**
      * @brief Sets the hint text beside the icon.
-     * @param text The displayed hint text.
+     * @param text The text to be displayed.
      */
     void setHintText(const QString &text);
 
     /**
-     * @brief Shows or hides the hint on the left.
+     * @brief Shows or hides the hint icon and text.
      * @param visible The visibility of the hint.
      */
     void setHintVisible(bool visible);
@@ -40,19 +41,13 @@ public:
      */
     void setRestartVisible(bool visible);
 
-    /**
-     * @brief Shows or hides the 'Give Up' button.
-     * @param visible The visibility of the 'Give Up' button.
-     */
-    void setGiveUpVisible(bool visible);
-
 private:
-    QHBoxLayout *hboxLayout;
+    QHBoxLayout *barLayout;
     QPushButton *iconButton;
     QLabel *hintLabel;
     QPushButton *restartButton;
 
-    // Used for the typewriter effect
+    // Used for the typewriting effect
     QTimer *hintTimer = nullptr;
     // Store the displayed length of the hint text
     int hintLength;
@@ -60,15 +55,15 @@ private:
     /**
      * @brief Displays the subsequent character after each interval,
      * simulating the interface of a typewriter.
-     * @param text The displayed hint text.
+     * @param text The text to be displayed.
      */
     void typewriteHint(const QString &text);
 
     /**
      * @brief Creates a new button on the right.
-     * @param icon Icon of the button.
-     * @param tip Tool tip of the button.
-     * @param callable Button's action on click.
+     * @param icon The icon of the button.
+     * @param tip The tool tip of the button.
+     * @param callable The action of the button on click.
      * @return The created button.
      */
     template <typename Callable>

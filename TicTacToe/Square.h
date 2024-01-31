@@ -23,7 +23,7 @@ public:
     void zoomIn();
 
     /**
-     * @brief Shows and hides the icon after each interval.
+     * @brief Shows then hides the icon after each interval.
      */
     void flash();
 

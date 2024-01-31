@@ -12,7 +12,12 @@ namespace WinGui {
 
     /**
      * @brief Checks if the OS is in dark mode.
-     * @return 'true' if the OS is in dark mode; 'false' otherwise.
+     * @return true if the OS is in dark mode; false otherwise.
      */
     bool isDarkMode();
+
+    /**
+     * @brief Relaunches the program.
+     */
+    void relaunch();
 }

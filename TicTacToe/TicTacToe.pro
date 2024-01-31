@@ -43,7 +43,12 @@ QMAKE_TARGET_DESCRIPTION = "Tic Tac Toe"
 
 RC_ICONS = "Logo.ico"
 
-VERSION = 2.0.0
+VERSION = 2.1.0
+
+TRANSLATIONS += \
+    TicTacToe_zh_CN.ts
+CONFIG += lrelease
+CONFIG += embed_translations
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

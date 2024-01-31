@@ -11,7 +11,6 @@
 #include <QtWidgets>
 
 // Project Headers
-#include "SingleApplication"
-#include "WinGui.h"
 #include "File.h"
 #include "Icon.h"
+#include "WinGui.h"

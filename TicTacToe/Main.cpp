@@ -1,6 +1,8 @@
 #include "Game.h"
 #include "Attr.h"
 
+#include "SingleApplication"
+
 Game *game;
 // Whether the OS is in dark mode
 bool dark = WinGui::isDarkMode();
@@ -34,23 +36,39 @@ void adaptTheme() {
  */
 int main(int argc, char **argv) {
     SingleApplication app(argc, argv, true);
+    AllowSetForegroundWindow(DWORD(app.primaryPid()));
 
     // No secondary instances allowed
     // Switch to the primary instance instead
     if (app.isSecondary()) {
-        AllowSetForegroundWindow(DWORD(app.primaryPid()));
         // Send a message to notify the primary instance
         app.sendMessage("Raise");
         // Exit the secondary instance
         return 0;
     }
 
-    // Set current directory to "Res"
+    // Set current directory to the parent folder
     QDir::setCurrent(app.applicationDirPath());
+    // Set current directory to 'Res'
     QDir::setCurrent("Res");
+
+    // Load saved attributes if possible
+    bool loaded = Attr::get().load();
+
+    // Update the display language
+    QTranslator translator;
+    if (Attr::get().lang == Lang::CHINESE_SIMPLIFIED &&
+        translator.load("../TicTacToe_zh_CN")) {
+        app.installTranslator(&translator);
+    }
 
     // Load external fonts
     QFontDatabase::addApplicationFont("Montserrat-SemiBold.ttf");
+    // For displaying chinese characters
+    QFontDatabase::addApplicationFont("MicrosoftYaheiUI-Bold.ttc");
+    
+    // Set application name
+    app.setApplicationName(QApplication::tr("Tic Tac Toe"));
 
     // Style application
     app.setStyle("Fusion");
@@ -72,7 +90,9 @@ int main(int argc, char **argv) {
 
     // Start the game
     game = new Game();
-    game->load();
+    if (loaded) {
+        game->load();
+    }
     game->show();
 
     return app.exec();

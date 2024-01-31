@@ -1,21 +1,29 @@
 #pragma once
 
 /**
- * @brief Contains shared attributes in the program.
+ * @brief Contains the names of available languages.
+ */
+namespace Lang {
+    const QString ENGLISH = "English";
+    const QString CHINESE_SIMPLIFIED = "简体中文";
+}
+
+/**
+ * @brief Contains shared attributes for saving and loading game state.
  */
 class Attr {
 public:
     // Game Progress
     /**
-     * @brief Index locations of the 'X' squares.
+     * @brief Stores the index locations of the 'X' squares.
      */
     QList<int> xPlaced;
     /**
-     * @brief Index locations of the 'O' squares.
+     * @brief Stores the index locations of the 'O' squares.
      */
     QList<int> oPlaced;
     /**
-     * @brief Whether it is X's turn to place its mark.
+     * @brief Whether it is X's turn to place an icon.
      */
     bool xTurn;
     /**
@@ -36,6 +44,10 @@ public:
      * @brief Whether the hint on the left of the game bar is visible.
      */
     bool hinted;
+    /**
+     * @brief Displayed language.
+     */
+    QString lang;
 
     // Statistics
     /**
@@ -74,12 +86,12 @@ public:
 
     // Save & Load
     /**
-     * @brief Saves all attributes to the local disk.
+     * @brief Saves all attributes to the game folder.
      */
     void save();
     /**
-     * @brief Loads all attributes from the local disk.
-     * @return 'true' if successful; 'false' otherwise.
+     * @brief Loads all attributes from the game folder.
+     * @return true if successful; false otherwise.
      */
     bool load();
 

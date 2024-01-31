@@ -13,18 +13,13 @@ Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
     setAttribute(Qt::WA_DeleteOnClose);
 
     // Set up the layout
-    auto mainLayout = new QVBoxLayout(this);
-    mainLayout->setSpacing(0);
+    mainLayout = new QVBoxLayout(this);
+    mainLayout->setSpacing(30);
     mainLayout->setContentsMargins(30, 30, 30, 30);
-
-    // Container for any additional widgets
-    mainFrame = new QFrame(this);
-    mainLayout->addWidget(mainFrame);
-    mainLayout->addStretch();
 
     // Container for buttons
     auto buttonFrame = new QFrame(this);
-    mainLayout->addSpacing(45);
+    mainLayout->addSpacing(30);
     mainLayout->addWidget(buttonFrame, 0, Qt::AlignCenter);
 
     // Display buttons horizontally
@@ -33,7 +28,7 @@ Dialog::Dialog(Game *game, const QIcon &icon, const QString &title)
     buttonLayout->setContentsMargins(0, 0, 0, 0);
 
     // Create a universal 'OK' button that closes a dialog on click.
-    okButton = new QPushButton("OK", this);
+    okButton = new QPushButton(tr("OK"), this);
     connect(okButton, &QPushButton::clicked, this, &close);
     buttonLayout->addWidget(okButton);
 }
@@ -49,27 +44,37 @@ void Dialog::show() {
 }
 
 SettingsDialog::SettingsDialog(Game *game)
-    : Dialog(game, Icon::load("Settings.svg"), "Settings") {
-    // Set up the layout for the main frame
-    vboxLayout = new QVBoxLayout(mainFrame);
-    vboxLayout->setSpacing(10);
-    vboxLayout->setContentsMargins(0, 0, 0, 0);
-
+    : Dialog(game, Icon::load("Settings.svg"), tr("Settings")) {
     // Add check boxes
-    addBox("Play Against AI", Attr::get().playAI);
-    addBox("Enable Animation", Attr::get().animated);
-    addBox("Show Hint", Attr::get().hinted);
+    auto checkLayout = newGroupLayout(tr("Gameplay"));
+    checkLayout->addWidget(newCheckBox(tr("Play Against AI"),
+                                       Attr::get().playAI));
+    checkLayout->addWidget(newCheckBox(tr("Enable Animation"),
+                                       Attr::get().animated));
+    checkLayout->addWidget(newCheckBox(tr("Show Hint"),
+                                       Attr::get().hinted));
+
+    // Select language
+    langBox = new QComboBox(this);
+    langBox->addItem(Lang::ENGLISH);
+    langBox->addItem(Lang::CHINESE_SIMPLIFIED);
+    langBox->setCurrentText(Attr::get().lang);
+
+    auto langLayout = newGroupLayout(tr("Language"));
+    langLayout->addWidget(langBox);
+
+    // Reset all settings on click
+    auto resetButton = new QPushButton(tr("Reset"), this);
+    connect(resetButton, &QPushButton::clicked, this, &resetSettings);
+    buttonLayout->insertWidget(0, resetButton);
+    buttonLayout->insertSpacing(1, 45);
+    buttonLayout->insertStretch(2);
 
     // Update all settings on click
     connect(okButton, &QPushButton::clicked, this, &updateSettings);
 
-    // Reset all settings on click
-    auto resetButton = new QPushButton("Reset", this);
-    connect(resetButton, &QPushButton::clicked, this, &resetSettings);
-    buttonLayout->addWidget(resetButton);
-
     // Discard all changes on click
-    auto cancelButton = new QPushButton("Cancel", this);
+    auto cancelButton = new QPushButton(tr("Cancel"), this);
     connect(cancelButton, &QPushButton::clicked, this, &close);
     buttonLayout->addWidget(cancelButton);
 }
@@ -78,11 +83,24 @@ SettingsDialog::~SettingsDialog() {
 
 }
 
-void SettingsDialog::addBox(const QString &name, bool &state) {
+QVBoxLayout *SettingsDialog::newGroupLayout(const QString &title) {
+    // Create a group box
+    auto box = new QGroupBox(title, this);
+    mainLayout->insertWidget(mainLayout->count() - 2, box);
+
+    // Set up the layout for the group box
+    auto vboxLayout = new QVBoxLayout(box);
+    vboxLayout->setSpacing(10);
+    vboxLayout->setContentsMargins(25, 25, 25, 25);
+
+    return vboxLayout;
+}
+
+QCheckBox *SettingsDialog::newCheckBox(const QString &name, bool &state) {
     auto box = new QCheckBox(name, this);
     box->setChecked(state);
     boxes.insert(box, &state);
-    vboxLayout->addWidget(box);
+    return box;
 }
 
 void SettingsDialog::updateSettings() {
@@ -90,11 +108,16 @@ void SettingsDialog::updateSettings() {
         *it.value() = it.key()->isChecked();
     }
 
+    langChanged = Attr::get().lang != langBox->currentText();
+    Attr::get().lang = langBox->currentText();
+
     applySettings();
 }
 
 void SettingsDialog::resetSettings() {
     Attr::get().resetSettings();
+
+    langChanged = Attr::get().lang != langBox->currentText();
 
     applySettings();
 }
@@ -103,45 +126,55 @@ void SettingsDialog::applySettings() {
     game->continueRound();
     game->getGameBar()->setHintVisible(Attr::get().hinted);
 
+    // Relaunch the program after changing the language
+    if (langChanged) {
+        WinGui::relaunch();
+    }
+
     close();
 }
 
 StatsDialog::StatsDialog(Game *game)
-    : Dialog(game, Icon::load("Stats.svg"), "Statistics") {
+    : Dialog(game, Icon::load("Stats.svg"), tr("Statistics")) {
+    auto formFrame = new QFrame(this);
+    mainLayout->insertWidget(0, formFrame);
+
     // Set up the layout for the main frame
-    formLayout = new QFormLayout(mainFrame);
+    formLayout = new QFormLayout(formFrame);
     formLayout->setHorizontalSpacing(150);
     formLayout->setVerticalSpacing(10);
     formLayout->setContentsMargins(0, 0, 0, 0);
 
     // Display X's score
-    addEntry(Icon::load("X.svg"), Attr::get().playAI ? "You" : "Player #1",
-             Attr::get().xWins);
+    addRow(Icon::load("X.svg"),
+           Attr::get().playAI ? tr("You") : tr("Player 1"),
+           Attr::get().xWins);
 
     // Display the number of ties between 'X' and 'O'
-    addEntry(Icon::load("Tie.svg"), "Tie", Attr::get().ties);
+    addRow(Icon::load("Tie.svg"), tr("Tie"), Attr::get().ties);
 
     // Display O's score
-    addEntry(Icon::load("O.svg"), Attr::get().playAI ? "AI" : "Player #2",
-             Attr::get().oWins);
+    addRow(Icon::load("O.svg"),
+           Attr::get().playAI ? tr("AI") : tr("Player 2"),
+           Attr::get().oWins);
 
     // Reset all statistics on click
-    auto resetButton = new QPushButton("Reset", this);
+    auto resetButton = new QPushButton(tr("Reset"), this);
     connect(resetButton, &QPushButton::clicked, this, &resetStats);
-    buttonLayout->addWidget(resetButton);
+    buttonLayout->insertWidget(0, resetButton);
 }
 
 StatsDialog::~StatsDialog() {
 
 }
 
-void StatsDialog::addEntry(const QIcon &icon, const QString &name, int val) {
+void StatsDialog::addRow(const QIcon &icon, const QString &name, int value) {
     // Display the icon and the name on the left
     auto nameButton = new QPushButton(icon, "   " + name + ":", this);
     nameButton->setStyleSheet("border: 0");
 
     // Display the value on the right
-    auto valLabel = new QLabel(QString::number(val), this);
+    auto valLabel = new QLabel(QString::number(value), this);
     valLabel->setStyleSheet("font-size: 24px");
 
     formLayout->addRow(nameButton, valLabel);
@@ -153,17 +186,12 @@ void StatsDialog::resetStats() {
 }
 
 HelpDialog::HelpDialog(Game *game)
-    : Dialog(game, Icon::load("Help.svg"), "Help") {
-    // Set up the layout for the main frame
-    auto vboxLayout = new QVBoxLayout(mainFrame);
-    vboxLayout->setSpacing(0);
-    vboxLayout->setContentsMargins(0, 0, 0, 0);
-
+    : Dialog(game, Icon::load("Help.svg"), tr("Help")) {
     // Create tabs for navigation
     auto tabWidget = new QTabWidget(this);
-    tabWidget->addTab(newBrowser("Rules.html"), "Rules");
-    tabWidget->addTab(newBrowser("About.html"), "About");
-    vboxLayout->addWidget(tabWidget);
+    tabWidget->addTab(newBrowser(tr("Rules.html")), tr("Rules"));
+    tabWidget->addTab(newBrowser(tr("About.html")), tr("About"));
+    mainLayout->insertWidget(0, tabWidget);
 }
 
 HelpDialog::~HelpDialog() {

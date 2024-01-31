@@ -6,36 +6,36 @@
 
 GameBar::GameBar(Game *game) : QFrame(game) {
     // Set up the layout
-    hboxLayout = new QHBoxLayout(this);
-    hboxLayout->setSpacing(5);
-    hboxLayout->setContentsMargins(0, 0, 0, 0);
+    barLayout = new QHBoxLayout(this);
+    barLayout->setSpacing(5);
+    barLayout->setContentsMargins(0, 0, 0, 0);
 
     // Display the icon on the left
     iconButton = new QPushButton(this);
-    iconButton->setToolTip("Hint");
-    hboxLayout->addWidget(iconButton);
+    iconButton->setToolTip(tr("Hint"));
+    barLayout->addWidget(iconButton);
 
     // Display the hint text beside the icon
     hintLabel = new QLabel(this);
-    hboxLayout->addWidget(hintLabel);
-    hboxLayout->addStretch();
+    barLayout->addWidget(hintLabel);
+    barLayout->addStretch();
 
     // Display a set of control buttons on the right
-    restartButton = newButton(Icon::load("Restart.svg"), "Restart", [game] {
+    restartButton = newButton(Icon::load("Restart.svg"), tr("Restart"), [game] {
         game->restart();
     });
 
-    newButton(Icon::load("Settings.svg"), "Settings", [game] {
+    newButton(Icon::load("Settings.svg"), tr("Settings"), [game] {
         auto dialog = new SettingsDialog(game);
         dialog->show();
     });
 
-    newButton(Icon::load("Stats.svg"), "Statistics", [game] {
+    newButton(Icon::load("Stats.svg"), tr("Statistics"), [game] {
         auto dialog = new StatsDialog(game);
         dialog->show();
     });
 
-    newButton(Icon::load("Help.svg"), "Help", [game] {
+    newButton(Icon::load("Help.svg"), tr("Help"), [game] {
         auto dialog = new HelpDialog(game);
         dialog->show();
     });
@@ -56,11 +56,6 @@ void GameBar::setHintIcon(const QIcon &icon) {
 }
 
 void GameBar::setHintText(const QString &text) {
-    // If the text does not change, exit the function
-    if (hintLabel->text() == text) {
-        return;
-    }
-
     // Apply animation if enabled
     if (Attr::get().animated) {
         typewriteHint(text);
@@ -117,7 +112,7 @@ QPushButton *GameBar::newButton(const QIcon &icon, const QString &tip,
     button->setToolTip(tip);
     button->setCursor(Qt::PointingHandCursor);
     connect(button, &QPushButton::clicked, this, callable);
-    hboxLayout->addWidget(button);
+    barLayout->addWidget(button);
 
     return button;
 }

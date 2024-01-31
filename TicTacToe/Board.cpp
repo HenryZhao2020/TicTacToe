@@ -36,7 +36,7 @@ void Board::placeIcon(int i, const QIcon &icon, bool animated) {
     // Mark the specified index location as placed
     notPlaced.removeOne(i);
 
-    // Place the icon on the square
+    // Place the icon in the square
     squares[i]->setIcon(icon);
     // Disable the square
     disconnect(squares[i], &Square::clicked, nullptr, nullptr);
@@ -60,11 +60,11 @@ void Board::placeSquare(int i) {
         return;
     }
 
-    // If it is X's turn, place the "X" icon on the board
+    // If it is X's turn, place the 'X' icon in the board
     if (Attr::get().xTurn) {
         placeX(i);
     // If it is O's turn, and the player is not playing against AI,
-    // place the "O" icon on the board
+    // place the 'O' icon in the board
     } else if (!Attr::get().playAI) {
         placeO(i);
     }
@@ -86,7 +86,7 @@ void Board::placeX(int i) {
     // Update the game bar
     gameBar->setHintVisible(false);
     QTimer::singleShot(500, this, [this] {
-        gameBar->setHintText("O's turn");
+        gameBar->setHintText(tr("O's turn"));
     });
 
     // If the player is playing against AI,
@@ -119,7 +119,7 @@ void Board::placeO(int i) {
     // Update the game bar
     gameBar->setHintVisible(Attr::get().hinted && Attr::get().playAI);
     QTimer::singleShot(500, this, [this] {
-        gameBar->setHintText("X's turn");
+        gameBar->setHintText(tr("X's turn"));
     });
 }
 
@@ -147,8 +147,6 @@ int Board::getNextO() {
 }
 
 int Board::getWinningMove(const QList<int> &placed) {
-    // If only 1 index is missing to complete a row,
-    // then that index will be the winning move
     for (const auto &seq : SEQUENCES) {
         if (placed.contains(seq[0]) && placed.contains(seq[1]) &&
             notPlaced.contains(seq[2])) {
@@ -200,7 +198,7 @@ void Board::end(const QIcon &icon, const QString &text) {
 
     // After 3s, notify the player to click a square to restart
     QTimer::singleShot(3000, this, [this] {
-        gameBar->setHintText("Click a square to restart...");
+        gameBar->setHintText(tr("Click a square to restart..."));
     });
 
     // Gray out all 'X' icons
@@ -230,7 +228,7 @@ void Board::end(const QIcon &icon, const QString &text) {
 }
 
 void Board::xWins(const QList<int> &seq) {
-    end(Icon::load("Win.svg"), "X wins!");
+    end(Icon::load("Win.svg"), tr("X wins!"));
 
     // Update the statistics
     Attr::get().xWins++;
@@ -246,7 +244,7 @@ void Board::xWins(const QList<int> &seq) {
 }
 
 void Board::oWins(const QList<int> &seq) {
-    end(Icon::load(Attr::get().playAI ? "AI.svg" : "Win.svg"), "O wins!");
+    end(Icon::load(Attr::get().playAI ? "AI.svg" : "Win.svg"), tr("O wins!"));
 
     // Update the statistics
     Attr::get().oWins++;
@@ -262,7 +260,7 @@ void Board::oWins(const QList<int> &seq) {
 }
 
 void Board::tie() {
-    end(Icon::load("Tie.svg"), "Tie!");
+    end(Icon::load("Tie.svg"), tr("Tie!"));
 
     // Update the statistics
     Attr::get().ties++;

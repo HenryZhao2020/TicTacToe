@@ -1,5 +1,6 @@
 #pragma once
 
+// Forward declarations
 class Game;
 
 /**
@@ -10,7 +11,7 @@ class Dialog : public QDialog {
 
 public:
     /**
-     * @brief Overrides the original QDialog::show() method.
+     * @brief Make this window non-resizable upon opening.
      */
     void show();
 
@@ -25,16 +26,17 @@ protected:
     ~Dialog();
 
     Game *game;
-    // Container for any additional widgets
-    QFrame *mainFrame;
-    // Display buttons horizontally
+
+    // The main layout of the dialog
+    QVBoxLayout *mainLayout;
+    // Display buttons horizontally on the bottom of the dialog
     QHBoxLayout *buttonLayout;
     // Create a universal 'OK' button that closes a dialog on click.
     QPushButton *okButton;
 };
 
 /**
- * @brief Displays a list of check boxes that toggle game settings.
+ * @brief Displays and modifies game settings.
  */
 class SettingsDialog : public Dialog {
     Q_OBJECT
@@ -48,17 +50,27 @@ public:
     ~SettingsDialog();
 
 private:
-    // Layout of the main frame
-    QVBoxLayout *vboxLayout;
     // Store each check box and a pointer to its corresponding value
     QHash<QCheckBox *, bool *> boxes;
+    // Display a list of available languages
+    QComboBox *langBox;
+    // Whether language is changed
+    bool langChanged;
 
     /**
-     * @brief Adds a check box that toggles a setting.
+     * @brief Creates a group box that displays widgets vertically.
+     * @param title The title of the group box.
+     * @return The created group box.
+     */
+    QVBoxLayout *newGroupLayout(const QString &title);
+
+    /**
+     * @brief Creates a check box that toggles a setting.
      * @param name The name of the setting.
      * @param state The initial state of the check box.
+     * @return The created check box.
      */
-    void addBox(const QString &name, bool &state);
+    QCheckBox *newCheckBox(const QString &name, bool &state);
 
     /**
      * @brief Updates all settings based on the states of the check boxes.
@@ -77,7 +89,7 @@ private:
 };
 
 /**
- * @brief Displays statistical data.
+ * @brief Displays rows of statistical data.
  */
 class StatsDialog : public Dialog {
     Q_OBJECT
@@ -91,16 +103,15 @@ public:
     ~StatsDialog();
 
 private:
-    // Layout of the main frame
     QFormLayout *formLayout;
 
     /**
-     * @brief Adds a statistical entry.
-     * @param icon The displayed icon.
-     * @param name The displayed text.
-     * @param val The statistical value.
+     * @brief Adds a row of statistical entry.
+     * @param icon The icon to be displayed on the left.
+     * @param name The name to be displayed beside the icon.
+     * @param value The statistical value displayed on the right.
      */
-    void addEntry(const QIcon &icon, const QString &name, int val);
+    void addRow(const QIcon &icon, const QString &name, int value);
 
     /**
      * @brief Resets all statistics to zero.

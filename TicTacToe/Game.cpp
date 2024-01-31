@@ -9,19 +9,20 @@ Game::Game() {
     setCentralWidget(widget);
 
     // Set up the layout
-    vboxLayout = new QVBoxLayout(widget);
-    vboxLayout->setSpacing(30);
-    vboxLayout->setContentsMargins(30, 30, 30, 30);
+    mainLayout = new QVBoxLayout(widget);
+    mainLayout->setSpacing(30);
+    mainLayout->setContentsMargins(30, 30, 30, 30);
 
     // Place the game bar on the top
     gameBar = new GameBar(this);
     gameBar->setHintIcon(Icon::load("Hint.svg"));
+    gameBar->setHintText(tr("Click a square to begin..."));
     gameBar->setRestartVisible(false);
-    vboxLayout->addWidget(gameBar);
+    mainLayout->addWidget(gameBar);
 
     // Place the board in the center
     board = new Board(this);
-    vboxLayout->addWidget(board, 0, Qt::AlignCenter);
+    mainLayout->addWidget(board, 0, Qt::AlignCenter);
 }
 
 Game::~Game() {
@@ -45,24 +46,18 @@ void Game::restart() {
     gameBar->setRestartVisible(false);
 
     // Remove and delete the old board
-    vboxLayout->removeWidget(board);
+    mainLayout->removeWidget(board);
     board->deleteLater();
 
     // Place a new board
     board = new Board(this);
-    vboxLayout->addWidget(board, 0, Qt::AlignCenter);
+    mainLayout->addWidget(board, 0, Qt::AlignCenter);
 
     // Continue the round
     continueRound();
 }
 
 void Game::load() {
-    // Load saved attributes if possible
-    if (!Attr::get().load()) {
-        gameBar->setHintText("Click a square to begin...");
-        return;
-    }
-
     // If the round has ended previously, start a new round
     if (Attr::get().ended) {
         restart();
@@ -90,7 +85,7 @@ void Game::continueRound() {
     }
 
     if (Attr::get().xTurn) {
-        gameBar->setHintText("X's turn");
+        gameBar->setHintText(tr("X's turn"));
     } else {
         if (Attr::get().playAI) {
             QTimer::singleShot(500, this, [this] {
@@ -98,7 +93,7 @@ void Game::continueRound() {
             });
         }
 
-        gameBar->setHintText("O's turn");
+        gameBar->setHintText(tr("O's turn"));
     }
 }
 

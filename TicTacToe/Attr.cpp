@@ -26,6 +26,7 @@ void Attr::resetSettings() {
     playAI = true;
     animated = true;
     hinted = true;
+    lang = Lang::ENGLISH;
 }
 
 void Attr::resetStats() {
@@ -35,7 +36,7 @@ void Attr::resetStats() {
 }
 
 void Attr::save() {
-    QFile file("Saved");
+    QFile file("../Saved");
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         return;
     }
@@ -53,12 +54,13 @@ void Attr::save() {
     out << xWins;
     out << oWins;
     out << ties;
+    out << lang;
 
     file.close();
 }
 
 bool Attr::load() {
-    QFile file("Saved");
+    QFile file("../Saved");
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         return false;
     }
@@ -76,6 +78,7 @@ bool Attr::load() {
     in >> xWins;
     in >> oWins;
     in >> ties;
+    in >> lang;
 
     file.close();
     return true;

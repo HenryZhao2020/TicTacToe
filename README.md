@@ -4,7 +4,7 @@ A classic board game that you can enjoy playing against your friends or my compu
 
 YouTube Demo: https://youtu.be/mHkpvoHMxG4
 
-Download Latest Version: https://github.com/HenryZhao2020/TicTacToe/releases/download/v2.0.0/TicTacToe-v2.0.0.zip
+Download Latest Version: https://github.com/HenryZhao2020/TicTacToe/releases/download/v2.1.0/TicTacToe-v2.1.0.zip
 
 
 # Preview
@@ -36,7 +36,7 @@ Tie:
 
 Settings Dialog:
 
-![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/6faea868-3ba1-4418-87cc-d449f67ec49f)
+![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/713b33d6-7d11-4b0d-911a-22f1628442ff)
 
 
 Statistics Dialog:

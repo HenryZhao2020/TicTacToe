@@ -36,7 +36,7 @@ Tie:
 
 Settings Dialog:
 
-![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/713b33d6-7d11-4b0d-911a-22f1628442ff)
+![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/24e194da-b631-4080-84b5-9512b159073d)
 
 
 Statistics Dialog:
@@ -46,4 +46,6 @@ Statistics Dialog:
 
 Help Dialog:
 
-![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/8d9b5eaa-9d26-409a-adc1-d354e81a662d)
+![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/6bcc638c-3088-42aa-935d-c1dc2a261ad9)
+
+![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/b65934f0-3ed2-41f5-ba92-4eaf0a7f71d2)

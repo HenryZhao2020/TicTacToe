@@ -2,7 +2,7 @@
     font: bold 13px Montserrat, Microsoft Yahei UI;
 }
 
-QMainWindow, QDialog {
+Game, QDialog {
     background: palette(base);
 }
 
@@ -19,8 +19,6 @@ Board {
 Square {
     background: palette(base);
     border: 0;
-    width: 110;
-    height: 110;
 }
 
 StatsDialog QPushButton {
@@ -31,6 +29,6 @@ StatsDialog QLabel {
     qproperty-alignment: AlignCenter;
 }
 
-HelpDialog QTabWidget QTextEdit {
+HelpDialog QTextBrowser {
     border: 0;
 }

@@ -15,26 +15,21 @@ Start of the Game:
 
 In-Game:
 
-<img width="632" alt="image" src="https://github.com/user-attachments/assets/702fb039-00af-4389-99d9-3044c7f5a623">
+<img width="632" alt="image" src="https://github.com/user-attachments/assets/f0c0db64-8e11-4772-a88e-82ee60e011bb">
 
 
 Round Ended:
 
-<img width="632" alt="image" src="https://github.com/user-attachments/assets/1e8f7af7-cb85-44d0-bb37-efb5fed39319">
+<img width="632" alt="image" src="https://github.com/user-attachments/assets/2af8af43-ebc4-4492-8ea3-462ea00baa6f">
 
 
 Settings Dialog:
 
-<img width="632" alt="image" src="https://github.com/user-attachments/assets/b98974f8-3347-43db-bb27-892e1e03e0c2">
-
-
-Statistics Dialog:
-
-![image](https://github.com/HenryZhao2020/TicTacToe/assets/75873192/678476be-37c1-45b7-adaa-87463a22687e)
+<img width="501" alt="image" src="https://github.com/user-attachments/assets/510142a3-7336-4458-9055-f5e90393f823">
 
 
 Help Dialog:
 
-<img width="632" alt="image" src="https://github.com/user-attachments/assets/677babb1-1bb6-4850-8b08-3591957e6675">
+<img width="526" alt="image" src="https://github.com/user-attachments/assets/f580441b-0fce-44b7-9441-0de043bda9b4">
 
-<img width="632" alt="image" src="https://github.com/user-attachments/assets/c9930adb-6052-4a5c-b791-331df9d288f9">
+<img width="526" alt="image" src="https://github.com/user-attachments/assets/044ad9af-6179-4a11-87d1-b884157a0dea">

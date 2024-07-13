@@ -3,6 +3,7 @@
 #include "Attr.h"
 
 #include <QApplication>
+#include <QDir>
 #include <QFontDatabase>
 #include <QTranslator>
 #include <QLibraryInfo>
@@ -12,6 +13,8 @@ int main(int argc, char *argv[]) {
     app.setStyle("Fusion");
     app.setStyleSheet(FileUtil::readAll(":/configs/Styles.qss"));
     QObject::connect(&app, &QApplication::aboutToQuit, &Attr::save);
+
+    QDir::setCurrent(app.applicationDirPath());
 
     QFontDatabase::addApplicationFont(":/fonts/MontserratAlternates-Medium.ttf");
     QFontDatabase::addApplicationFont(":/fonts/ZCOOLKuaiLe-Regular.ttf");

@@ -1,0 +1,44 @@
+* {
+    font: 14px Montserrat Alternates, ZCOOL KuaiLe;
+}
+
+GameBar QPushButton {
+    border: 0;
+    qproperty-iconSize: 24px 24px;
+}
+
+Board {
+    margin: 40;
+}
+
+QFrame#line {
+    background: gray;
+    min-width: 5;
+    min-height: 5;
+}
+
+Square {
+    border: 0;
+    width: 120;
+    height: 120;
+}
+
+ScoreBoard QLabel {
+    font-size: 22px;
+    qproperty-alignment: AlignCenter;
+    min-width: 120;
+}
+
+QLabel#red {
+    color: #F44336;
+}
+
+QLabel#blue {
+    color: #3B97EB;
+}
+
+HelpDialog QTextBrowser {
+    min-width: 350;
+    min-height: 300;
+    border: 0;
+}

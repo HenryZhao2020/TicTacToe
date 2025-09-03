@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>conf/Styles.qss</file>
+        <file>fonts/Montserrat-Variable.ttf</file>
+        <file>icons/Help.svg</file>
+        <file>icons/Reset.svg</file>
+    </qresource>
+</RCC>

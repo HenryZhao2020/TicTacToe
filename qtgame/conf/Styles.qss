@@ -1,0 +1,24 @@
+* {
+    font-family: Montserrat;
+}
+
+QLabel#title {
+    font-size: 24px;
+}
+
+GameBar QPushButton {
+    border: 0;
+}
+
+BoardView {
+    margin: 30px;
+}
+
+GridLine {
+    background: #999999;
+}
+
+CellView {
+    border: 0;
+    font-weight: bold;
+}
